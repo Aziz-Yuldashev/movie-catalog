@@ -5,3 +5,9 @@ export type MovieTypes = {
     Type: string
     Poster: string
 }
+
+export interface MovieAPITypes {
+    Search: MovieTypes[]
+    totalResults: string
+    Response: string
+}
