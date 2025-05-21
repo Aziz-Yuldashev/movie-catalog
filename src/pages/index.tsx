@@ -15,9 +15,11 @@ const IndexPage = () => {
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
     const debouncedSearch = useDebounce(search, 500)
+    const normalizedSearch = debouncedSearch.trim().toLowerCase()
+
     const { data, isLoading, error } = useSWR<MovieAPITypes>(
-        debouncedSearch.trim() ? [debouncedSearch, page] : null,
-        () => fetchMovies(debouncedSearch, page),
+        normalizedSearch ? [normalizedSearch, page] : null,
+        () => fetchMovies(normalizedSearch, page),
     )
     const totalPages = data?.totalResults ? Math.ceil(Number(data.totalResults) / 10) : 0
 
