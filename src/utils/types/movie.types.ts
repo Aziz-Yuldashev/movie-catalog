@@ -11,3 +11,9 @@ export interface MovieAPITypes {
     totalResults: string
     Response: string
 }
+
+export type MovieDetail = {
+    Title: string
+    Plot: string
+    imdbRating: string
+}
