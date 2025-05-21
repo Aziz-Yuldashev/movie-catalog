@@ -12,5 +12,7 @@ export const fetchMovies = async (search: string): Promise<MovieTypes[]> => {
         },
     })
 
+    console.log('response-', response)
+
     return response.data.Search || []
 }
