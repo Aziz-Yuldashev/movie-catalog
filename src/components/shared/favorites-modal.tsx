@@ -40,9 +40,9 @@ const FavoritesModal = ({ isOpen, onClose }: Props) => {
                         </Text>
                     ) : (
                         <VStack spacing={4}>
-                            {favorites.map((movie) => (
-                                <Box key={movie.imdbID} w="100%">
-                                    <MovieCard movie={movie} />
+                            {favorites.map((item) => (
+                                <Box key={item.imdbID} w="100%">
+                                    <MovieCard movie={item} />
                                 </Box>
                             ))}
                         </VStack>
