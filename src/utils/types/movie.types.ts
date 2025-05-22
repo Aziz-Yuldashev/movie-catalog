@@ -12,8 +12,7 @@ export interface MovieAPITypes {
     Response: string
 }
 
-export type MovieDetail = {
-    Title: string
+export type MovieDetailTypes = MovieTypes & {
     Plot: string
     imdbRating: string
 }

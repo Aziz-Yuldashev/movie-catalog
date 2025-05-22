@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { useDebounce } from '@/utils/hooks/use-debounce'
+import type { GetServerSideProps } from 'next'
+import { useSearch } from '@/utils/hooks/use-search'
 import { fetchMovies } from '@/utils/services/movies.service'
-import type { MovieTypes, MovieAPITypes } from '@/utils/types/movie.types'
+import { fetchTopMovies } from '@/utils/ssr/fetch-top-movies'
+import type { MovieTypes, MovieAPITypes, MovieDetailTypes } from '@/utils/types/movie.types'
 import { Container, Grid, Text } from '@chakra-ui/react'
 import Header from '@/components/layout/header'
 import MovieCard from '@/components/movie-card'
@@ -11,17 +13,35 @@ import Pagination from '@/components/shared/pagination'
 import useSWR from 'swr'
 import Head from 'next/head'
 
-const IndexPage = () => {
+type Props = {
+    initialMovies: MovieDetailTypes[]
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+    const initialMovies = await fetchTopMovies()
+
+    return {
+        props: {
+            initialMovies,
+        },
+    }
+}
+
+const IndexPage = ({ initialMovies }: Props) => {
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
-    const debouncedSearch = useDebounce(search, 500)
-    const normalizedSearch = debouncedSearch.trim().toLowerCase()
+    const normalizedSearch = useSearch(search)
 
     const { data, isLoading, error } = useSWR<MovieAPITypes>(
         normalizedSearch ? [normalizedSearch, page] : null,
         () => fetchMovies(normalizedSearch, page),
     )
-    const totalPages = data?.totalResults ? Math.ceil(Number(data.totalResults) / 10) : 0
+
+    const movies: (MovieTypes | MovieDetailTypes)[] =
+        data?.Search ?? (!normalizedSearch ? initialMovies : [])
+
+    const totalResults = data?.totalResults ?? movies.length
+    const totalPages = data ? Math.ceil(Number(totalResults) / 10) : 1
 
     return (
         <>
@@ -45,21 +65,23 @@ const IndexPage = () => {
                 {isLoading && <Loader />}
                 {error && <ErrorText message="Error loading movies" />}
 
-                {data?.Search?.length ? (
+                {movies.length ? (
                     <>
                         <Text mt={4} mb={2} fontSize="md" color="gray.400" textAlign="center">
-                            Found {data.totalResults} results
+                            Found {totalResults} results
                         </Text>
                         <Grid
                             mt={4}
                             templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
                             gap={6}
                         >
-                            {data.Search.map((item: MovieTypes) => (
+                            {movies.map((item) => (
                                 <MovieCard key={item.imdbID} movie={item} />
                             ))}
                         </Grid>
-                        <Pagination totalPages={totalPages} page={page} setPage={setPage} />
+                        {data && (
+                            <Pagination totalPages={totalPages} page={page} setPage={setPage} />
+                        )}
                     </>
                 ) : (
                     !isLoading && (

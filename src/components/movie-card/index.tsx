@@ -17,7 +17,6 @@ const MovieCard = ({ movie }: Props) => {
     const { isFavorite, toggleFavorite } = useFavorites()
 
     const { data: details } = useSWR(showInfo ? movie.imdbID : null, fetchMovieDetails)
-    console.log('details-', details)
     return (
         <Box position="relative" borderWidth="1px" borderRadius="md" overflow="hidden" p={4}>
             <IconButton
