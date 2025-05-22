@@ -78,8 +78,8 @@ const MovieCard = ({ movie }: Props) => {
                     textAlign="center"
                 >
                     <Text fontSize="sm" mb={2}>
-                        {details.Plot.length > 200
-                            ? details.Plot.slice(0, 200) + '...'
+                        {details.Plot.length > 400
+                            ? details.Plot.slice(0, 400) + '...'
                             : details.Plot}
                     </Text>
                     <Text fontWeight="bold">{details.imdbRating}/10</Text>
