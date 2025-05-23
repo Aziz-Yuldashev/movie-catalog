@@ -56,7 +56,8 @@ const MovieCard = ({ movie }: Props) => {
                 mb={3}
                 borderRadius="md"
                 onError={() => setImg('/placeholder.png')}
-                w={{ base: '100%', md: '300px' }}
+                w="100%"
+                // w={{ base: '100%', md: '300px' }}
             />
 
             {showInfo && details && (

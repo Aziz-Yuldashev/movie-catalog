@@ -1,7 +1,6 @@
 import {
     Box,
     Flex,
-    Input,
     IconButton,
     Avatar,
     Text,
@@ -14,13 +13,15 @@ import {
 import { StarIcon, MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { useFavorites } from '@/utils/providers/favorites-context'
 import FavoritesModal from '@/components/shared/favorites-modal'
+import SearchInput from '@/components/shared/search-input'
 
 type Props = {
     search: string
     setSearch: (value: string) => void
+    setPage: (value: number) => void
 }
 
-const Header = ({ search, setSearch }: Props) => {
+const Header = ({ search, setSearch, setPage }: Props) => {
     const isMobile = useBreakpointValue({ base: true, md: false })
     const { colorMode, toggleColorMode } = useColorMode()
     const bg = useColorModeValue('gray.100', 'gray.800')
@@ -48,13 +49,13 @@ const Header = ({ search, setSearch }: Props) => {
                         UPPER <span style={{ color: `${textColor}` }}>SETUP</span>
                     </Text>
 
-                    <Input
-                        placeholder="Search movies..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        bg="white"
-                        color="black"
-                        _placeholder={{ color: 'black' }}
+                    <SearchInput
+                        onDebouncedChange={(val) => {
+                            if (search !== val) {
+                                setSearch(val)
+                                setPage(1)
+                            }
+                        }}
                         flex={{ base: 'unset', md: 1 }}
                     />
 

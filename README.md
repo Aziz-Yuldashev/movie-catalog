@@ -32,13 +32,13 @@
 src/
 ├── components/ # UI компоненты (header, карточки, модалки)
 ├── pages/ # Страницы Next.js
+├── hooks/ # useDebounce, useSearch, useFavorites
 ├── utils/
-│ ├── hooks/ # useDebounce, useSearch, useFavorites
 │ ├── services/ # API-запросы
-│ ├── ssr/ # SSR загрузка топ-фильмов
 │ ├── types/ # Типы TypeScript
 │ └── providers/ # Контекст для избранного
 ├── theme/ # Chakra UI тема
+├── configs/ # END_POINT
 
 ```
 

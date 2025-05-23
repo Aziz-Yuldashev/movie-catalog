@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import type { GetServerSideProps } from 'next'
-import { useSearch } from '@/utils/hooks/use-search'
 import { fetchMovies } from '@/utils/services/movies.service'
-import { fetchTopMovies } from '@/utils/ssr/fetch-top-movies'
+import { fetchTopMovies } from '@/utils/services/fetch-top-movies'
 import type { MovieTypes, MovieAPITypes, MovieDetailTypes } from '@/utils/types/movie.types'
 import { Container, Grid, Text } from '@chakra-ui/react'
 import Header from '@/components/layout/header'
@@ -30,15 +29,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
 const IndexPage = ({ initialMovies }: Props) => {
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
-    const normalizedSearch = useSearch(search)
 
-    const { data, isLoading, error } = useSWR<MovieAPITypes>(
-        normalizedSearch ? [normalizedSearch, page] : null,
-        () => fetchMovies(normalizedSearch, page),
+    const { data, isLoading, error } = useSWR<MovieAPITypes>(search ? [search, page] : null, () =>
+        fetchMovies(search, page),
     )
 
-    const movies: (MovieTypes | MovieDetailTypes)[] =
-        data?.Search ?? (!normalizedSearch ? initialMovies : [])
+    const movies: (MovieTypes | MovieDetailTypes)[] = data?.Search ?? (!search ? initialMovies : [])
 
     const totalResults = data?.totalResults ?? movies.length
     const totalPages = data ? Math.ceil(Number(totalResults) / 10) : 1
@@ -54,13 +50,7 @@ const IndexPage = ({ initialMovies }: Props) => {
             </Head>
 
             <Container maxW="container.xl" py={8} px={3}>
-                <Header
-                    search={search}
-                    setSearch={(val) => {
-                        setSearch(val)
-                        setPage(1)
-                    }}
-                />
+                <Header search={search} setSearch={setSearch} setPage={setPage} />
 
                 {isLoading && <Loader />}
                 {error && <ErrorText message="Error loading movies" />}

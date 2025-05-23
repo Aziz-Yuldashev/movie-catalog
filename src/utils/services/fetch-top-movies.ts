@@ -1,7 +1,11 @@
 import { fetchMovieDetails } from '@/utils/services/movie-details.service'
 import type { MovieDetailTypes } from '@/utils/types/movie.types'
 
+let cache: MovieDetailTypes[] | null = null
 export const fetchTopMovies = async (): Promise<MovieDetailTypes[]> => {
+    if (cache) return cache
+    console.log('Fetching top movies from API...')
+
     const topMovieIDs = [
         'tt0111161', // The Shawshank Redemption
         'tt0068646', // The Godfather
@@ -16,15 +20,9 @@ export const fetchTopMovies = async (): Promise<MovieDetailTypes[]> => {
     ]
 
     const movies = await Promise.all(
-        topMovieIDs.map(async (id) => {
-            try {
-                return await fetchMovieDetails(id)
-            } catch (e) {
-                console.error(`Failed to fetch movie with ID ${id}`, e)
-                return null
-            }
-        }),
+        topMovieIDs.map((id) => fetchMovieDetails(id).catch(() => null)),
     )
+    cache = movies.filter(Boolean) as MovieDetailTypes[]
 
-    return movies.filter(Boolean) as MovieDetailTypes[]
+    return cache
 }

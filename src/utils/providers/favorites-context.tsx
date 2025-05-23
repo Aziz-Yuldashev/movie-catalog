@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { MovieTypes } from '@/utils/types/movie.types'
+import { useMemo } from 'react'
 
 type FavoritesContextType = {
     favorites: MovieTypes[]
@@ -42,18 +43,17 @@ export const FavoritesProvider = ({ children }: { children: React.ReactNode }) =
         updateStorage(updated)
     }
 
-    return (
-        <FavoritesContext.Provider
-            value={{
-                favorites,
-                toggleFavorite,
-                isFavorite,
-                count: favorites.length,
-            }}
-        >
-            {children}
-        </FavoritesContext.Provider>
+    const value = useMemo(
+        () => ({
+            favorites,
+            toggleFavorite,
+            isFavorite,
+            count: favorites.length,
+        }),
+        [favorites],
     )
+
+    return <FavoritesContext.Provider value={value}>{children}</FavoritesContext.Provider>
 }
 
 export const useFavorites = () => {
