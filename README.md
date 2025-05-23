@@ -32,7 +32,7 @@
 src/
 ├── components/ # UI компоненты (header, карточки, модалки)
 ├── pages/ # Страницы Next.js
-├── hooks/ # useDebounce, useSearch, useFavorites
+├── hooks/ # useDebounce
 ├── utils/
 │ ├── services/ # API-запросы
 │ ├── types/ # Типы TypeScript
